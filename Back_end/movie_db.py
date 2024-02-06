@@ -76,27 +76,6 @@ class Movies:
         self.movies_collection.delete_one({"_id": ObjectId(_id)})
 
 
-#movie_instance = Movies()
-
-#new_movie_id = movie_instance.createMovie("The Dark Knight:",100, True, "Batman se enfrenta al Joker en una batalla épica por la justicia en Gotham City.", "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg")
-#print(f"New movie created with ID: {new_movie_id}")
-
-#movies_list = movie_instance.getMovie()
-#movi_id_check = '65bef950b34728516d395888'
-#rented_status = movie_instance.isRented(movi_id_check)
-#movie_delete = '65c003967df8b2462cc4094f'
-#movie_instance.deleteMovie(movie_delete)
-
-#mov = movie_instance.getMovie_by_id(movi_id_check)
-#print(mov)
-
-#if rented_status:
-#    print("The movie is rented.")
-#else:
-#    print("Movie not found or not rented.")
-
-#for movie in movies_list:
-#    print(movie)
 
 class User:
     def __init__(self, name, email, password) ->None:
@@ -165,13 +144,37 @@ class Administrator(User):
         self.users = users
         self.movies_in_stock = movies_in_stock
     
-
+    def banUser():
+        pass
+    def freeUser():
+        pass
 # Crear una nueva película con imagen
 #new_movie = Movies("tt789012", "Nueva Película", 12.99, False, "Una película emocionante", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/1200px-IMDB_Logo_2016.svg.png")
 #new_movie_id = new_movie.createMovie(new_movie.imdb, new_movie.name, new_movie.price, new_movie.status, new_movie.overview, new_movie.image)
 #print(f"Nueva película creada con ID: {new_movie_id}")
 
 # Crear un nuevo usuario
-new_user = User("Usuario1", "nuevo_usuario@example.com", "contraseña123")
-new_user_id = new_user.createUser()
-print(f"Nuevo usuario creado con ID: {new_user_id}")
+#new_user = User("Usuario1", "nuevo_usuario@example.com", "contraseña123")
+#new_user_id = new_user.createUser()
+#print(f"Nuevo usuario creado con ID: {new_user_id}")
+##movie_instance = Movies()
+
+#new_movie_id = movie_instance.createMovie("The Dark Knight:",100, True, "Batman se enfrenta al Joker en una batalla épica por la justicia en Gotham City.", "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg")
+#print(f"New movie created with ID: {new_movie_id}")
+
+#movies_list = movie_instance.getMovie()
+#movi_id_check = '65bef950b34728516d395888'
+#rented_status = movie_instance.isRented(movi_id_check)
+#movie_delete = '65c003967df8b2462cc4094f'
+#movie_instance.deleteMovie(movie_delete)
+
+#mov = movie_instance.getMovie_by_id(movi_id_check)
+#print(mov)
+
+#if rented_status:
+#    print("The movie is rented.")
+#else:
+#    print("Movie not found or not rented.")
+
+#for movie in movies_list:
+#    print(movie)
