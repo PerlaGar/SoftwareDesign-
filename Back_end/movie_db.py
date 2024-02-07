@@ -15,10 +15,6 @@ class Movies:
         self.status = status
         self.overview = overview
         self.image = image 
-
-#    def createMovie(self):
-#        movie_data = self.__dict__
-#        return movies_collection.insert_one(movie_data).inserted_id
     
     def editMovie(movie_id, data):
         return movies_collection.update_one({"_id":ObjectId(movie_id)}, {"$set": data})
@@ -45,7 +41,7 @@ class Movies:
         return movies_collection.find_one({"_id": ObjectId(movie_id)})
 
     def get_movies_by_title(self, title:str):
-        return self.movies_collection.find('movies', {'name':name})
+        return self.movies_collection.find('movies', {'name':title})
 
     def get_status(self, _id) -> None:
         movie = self.movies_collection.find_one({"_id": ObjectId(_id)})
@@ -78,29 +74,42 @@ class Movies:
 
 
 class User:
-    def __init__(self, name, email, password) ->None:
+
+    def __init__(self, name, email, password) -> None:
         self.name = name
         self.email = email
         self.password = password
+        self.status = True
 
     def createUser(self):
-        user_data = {"name": self.name, "email":self.email, "password": self.password, "type":"client"}
+        user_data = {
+            "name": self.name,
+            "email": self.email,
+            "password": self.password,
+            "type": "client",
+            "status": self.status
+        }
         return user_collection.insert_one(user_data).inserted_id
     
-    def createAdmin():
-        admin_data = {"name": self.name, "email":self.email, "password": self.password, "type":"admin"}
+    def createAdmin(self):
+        admin_data = {
+                    "name": self.name, 
+                    "email":self.email, 
+                    "password": self.password, 
+                    "type":"admin", 
+                    "status": self.status}
         return user_collection.insert_one(admin_data).inserted_id
+    
+    def getUserByEmail(self, email:str):
+        return user_collection.find_one({"email":email})
     
 
 class Client(User):
-    def __init__(self, name, email, password, id, rented, balance, isEnabled) ->None:
-        super().__init__(user.name, user.email, user.password)
-        self.id = id
-        self.rented = rented
-        self.balance = balance
-        self.isEnabled = isEnabled
 
     def rentMovie(self, movie_id):
+        if self.status == False:
+            return False
+
         movie = movies_collection.find_one({"_id":ObjectId(movie_id)})
         
         if movie is None:
@@ -139,15 +148,17 @@ class Client(User):
             return False, "Insufficient balance"
 
 class Administrator(User):
-    def __init__(self, name, email, password, users, movies_in_stock):
-        super().__init__(self.name, self.email, self.password)
-        self.users = users
-        self.movies_in_stock = movies_in_stock
     
-    def banUser():
-        pass
-    def freeUser():
-        pass
+    def banUser(self, email:Client):
+        query = {"email": email.email}
+        user_collection.update_one(query, {"$set":{"status":False}})
+        email.status = False
+
+    def freeUser(self, email:Client):
+        query = {"email": email.email}
+        user_collection.update_one(query, {"$set":{"status":True}})
+        email.status = True
+
 # Crear una nueva película con imagen
 #new_movie = Movies("tt789012", "Nueva Película", 12.99, False, "Una película emocionante", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/1200px-IMDB_Logo_2016.svg.png")
 #new_movie_id = new_movie.createMovie(new_movie.imdb, new_movie.name, new_movie.price, new_movie.status, new_movie.overview, new_movie.image)
@@ -158,6 +169,20 @@ class Administrator(User):
 #new_user_id = new_user.createUser()
 #print(f"Nuevo usuario creado con ID: {new_user_id}")
 ##movie_instance = Movies()
+
+#new_user1 = Administrator("Uziel", "uziel.solis@iteso.mx", "1234")
+#new_user2 = Client("Chava", "chava@iteso.mx", "4321")
+#cliente1 = Client("Aldair", "aldair@iteso.mx", "2468")
+
+
+#print(cliente1.status)
+#new_user1.freeUser(cliente1.id)
+#print(cliente1.status)
+#new_user1.banUser(cliente1)
+#print(cliente1.status)
+#print(cliente1.rentMovie('65c025b74c719debcbd8132b'))
+#new_user1.freeUser(cliente1)
+#print(cliente1.rentMovie('65c025b74c719debcbd8132b'))
 
 #new_movie_id = movie_instance.createMovie("The Dark Knight:",100, True, "Batman se enfrenta al Joker en una batalla épica por la justicia en Gotham City.", "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg")
 #print(f"New movie created with ID: {new_movie_id}")
