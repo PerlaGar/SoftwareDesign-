@@ -1,10 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, session, jsonify, request
 from movie_db import Movies
 from bson import ObjectId
+from pymongo import MongoClient
 
 app = Flask(__name__)
 
 movies_r = Movies()
+client = MongoClient("mongodb+srv://user_2:Zwut9Ul2IlLG2noo@cluster0.37fbdrx.mongodb.net/")
+db = client["Movies"]
+movies_collection = db["Movies"]
+user_collection = db["Users"]
 
 @app.route('/movies', methods=['GET'])
 def getMovie():
@@ -60,6 +65,32 @@ def deleteMovie(_id: str):
     else:
         movies_r.deleteMovie(id)
         return jsonify({'message': 'Película eliminada corectamente'}), 200
+    
+# Ruta para el login
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.json['email']
+    password = request.json['password']
+    user = user_collection.find_one({"email": email, "password": password})
+    if user:
+        session['user_id'] = str(user['_id'])
+        return jsonify({'message': 'Login successful'}), 200
+    else:
+        return jsonify({'message': 'Invalid email or password'}), 401
+    
+@app.route('/<string:email>', methods=['GET'])
+def getClient_by_email(email: str):
+    client = user_collection.find_one({"email":email})
+    if client is None:
+        return jsonify({'message': 'No se encontró la película'}), 400
+    else: 
+        return jsonify(client), 200
+
+# Verificar si el usuario está logueado antes de ejecutar las rutas de películas
+@app.before_request
+def before_request():
+    if request.endpoint != 'login' and 'user_id' not in session:
+        return jsonify({'message': 'Unauthorized access'}), 401
 
 if __name__ == '__main__':
     app.run(debug=True)
