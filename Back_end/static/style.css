@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.movie-item {
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.movie-item h2 {
+    margin: 0 0 10px 0;
+}
+
+.movie-overview {
+    font-size: 14px;
+}
+
+.movie-image {
+    max-width: 100px;
+    float: left;
+    margin-right: 20px;
+}
