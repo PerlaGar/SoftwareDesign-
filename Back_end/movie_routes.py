@@ -1,4 +1,5 @@
 from flask import Flask, render_template, session, jsonify, request
+from flask_cors import CORS
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
 from bson import ObjectId
@@ -6,6 +7,7 @@ from movie_db import Movies, Administrator, User, Client # Ensure this import re
 from pymongo import MongoClient
 
 app = Flask(__name__)
+CORS(app)
 
 # MongoDB setup
 app.config["MONGO_URI"] = "mongodb+srv://user_2:Zwut9Ul2IlLG2noo@cluster0.37fbdrx.mongodb.net/Movies"
@@ -84,8 +86,6 @@ def get_user_by_email(email):
 def getUsers():
     users = admin_r.getUsers()
     return jsonify({'users': users})
-
-
 
 
 if __name__ == '__main__':
