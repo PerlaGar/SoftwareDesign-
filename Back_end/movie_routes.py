@@ -18,7 +18,7 @@ def getMovie():
 
 @app.route('/<string:_id>', methods=['GET'])
 def getMovie_by_id(_id: str):
-    movie = movies_r.getMovie_by_id(id)
+    movie = movies_r.getMovie_by_id(_id)
     if movie is None:
         return jsonify({'message': 'No se encontró la película'}), 400
     else: 
@@ -29,6 +29,7 @@ def getMovie_by_id(_id: str):
 def create_Movie():
     movie = {
         "name": request.json['name'],
+        "imdb": request.json['imdb'],
         "price": request.json['price'],
         "status": request.json['status'],
         "overview": request.json['overview'],
@@ -41,12 +42,14 @@ def create_Movie():
 
 @app.route('/<string:_id>', methods = ['PUT'])
 def editMovie(_id: str):
-    new_movie = movies_r.getMovie_by_id(id)
+    new_movie = movies_r.getMovie_by_id(_id)
     if new_movie is None:
         return jsonify({'message': 'No se encontró la película a editar'}), 400
     else:
         if "name" in request.json:
             new_movie["name"] = request.json["name"]
+        if "imdb" in request.json:
+            new_movie["imdb"] = request.json["imdb"]
         if "price" in request.json:
             new_movie["price"] = request.json["price"]
         if "status" in request.json:
@@ -59,11 +62,11 @@ def editMovie(_id: str):
 
 @app.route('/<string:_id>', methods=['DELETE'])
 def deleteMovie(_id: str):
-    movie = movies_r.getMovie_by_id(id)
+    movie = movies_r.getMovie_by_id(_id)
     if movie is None:
         return jsonify({'message': 'Película no encontrada'}), 404
     else:
-        movies_r.deleteMovie(id)
+        movies_r.deleteMovie(_id)
         return jsonify({'message': 'Película eliminada corectamente'}), 200
     
 # Ruta para el login
