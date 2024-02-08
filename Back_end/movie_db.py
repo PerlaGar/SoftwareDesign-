@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-from bson import ObjectId
+from bson import ObjectId, Decimal128
+import json
 
 # Initialize MongoDB client and collections
 client = MongoClient("mongodb+srv://user_2:Zwut9Ul2IlLG2noo@cluster0.37fbdrx.mongodb.net/")
@@ -30,20 +31,29 @@ class Movies:
             print(movie)
             movieList.append({
                 "id": str(movie['_id']),
-                "name": movie['name'],
-                "price": movie['price'],
-                "status": movie['status'],
-                "overview": movie['overview'],
-                "imdb": movie['imdb'],
-                "image": movie['image']
+                "name": str(movie['name']),
+                "price": float(str(movie['price'])),
+                "status": bool(movie['status']),
+                "overview": str(movie['overview']),
+                "imdb": str(movie['imdb']),
+                "image": str(movie['image'])
             })
         return movieList
 
     @staticmethod
-    def getMovie_by_id(movie_id) -> dict:
+    def getMovie_by_id(movie_id):
         '''Returns the movie with the given ID'''
-        return movies_collection.find_one({"_id": ObjectId(movie_id)})
-
+        movie =  movies_collection.find_one({"_id": ObjectId(movie_id)})
+        movie['_id'] =  str(movie['_id'])
+        return movie
+    
+    @staticmethod
+    def getMovie_by_name(movie_title):
+        '''Returns the movie with the given name'''
+        movie =  movies_collection.find_one({"name": str(movie_title)})
+        movie['_id'] =  str(movie['_id'])
+        return movie
+        
     @staticmethod
     def createMovie(imdb:str, name:str, price:float, status:str, overview:str, image:str) -> str:
         '''Creates a movie'''
@@ -56,7 +66,8 @@ class Movies:
             "image": image
         }
         result = movies_collection.insert_one(new_movie)
-        return str(result.inserted_id)
+        res = Movies.getMovie_by_name(new_movie["name"])
+        return str(res['_id'])
 
     @staticmethod
     def deleteMovie(_id) -> None:
