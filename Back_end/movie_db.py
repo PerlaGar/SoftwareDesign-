@@ -1,62 +1,53 @@
 from pymongo import MongoClient
 from bson import ObjectId
 
+# Initialize MongoDB client and collections
 client = MongoClient("mongodb+srv://user_2:Zwut9Ul2IlLG2noo@cluster0.37fbdrx.mongodb.net/")
 db = client["Movies"]
 movies_collection = db["Movies"]
 user_collection = db["Users"]
 
-class Movies:
-    def __init__(self, imdb, name, price, status, overview, image) -> None:
-        '''Inicializa la clase películas'''
+class Movie:
+    def __init__(self, imdb: str, name: str, price: float, status: str, overview:str, image: str) -> None:
+        '''Initialize movie class'''
         self.imdb = imdb
         self.name = name
         self.price = price
         self.status = status
         self.overview = overview
         self.image = image 
-    
+
+class Movies:
+    @staticmethod
     def editMovie(movie_id, data):
         return movies_collection.update_one({"_id":ObjectId(movie_id)}, {"$set": data})
     
-    def getMovie(self) -> list:
-        '''Devuelve la lista de todas las películas'''
+    @staticmethod
+    def getMovie() -> list:
+        '''Return the list of all movies'''
         movieList = []
-        for movie in self.movies_collection.find():
-            movieList.append(
-                {
-                    "id": str (movie['_id']),
-                    "name":movie['name'],
-                    "price":movie['price'],
-                    "status":movie['status'],
-                    "overview":movie['overview'],
-                    "imdb" : movie['imdb'],
-                    "image":movie['image']
-                }
-            )
+        for movie in movies_collection.find():
+            print(movie)
+            movieList.append({
+                "id": str(movie['_id']),
+                "name": movie['name'],
+                "price": movie['price'],
+                "status": movie['status'],
+                "overview": movie['overview'],
+                "imdb": movie['imdb'],
+                "image": movie['image']
+            })
         return movieList
 
-    def getMovie_by_id(self, movie_id) -> dict:
-        '''Regresa la película con el ID dado'''
+    @staticmethod
+    def getMovie_by_id(movie_id) -> dict:
+        '''Returns the movie with the given ID'''
         return movies_collection.find_one({"_id": ObjectId(movie_id)})
 
-    def get_movies_by_title(self, title:str):
-        return self.movies_collection.find('movies', {'name':title})
-
-    def get_status(self, _id) -> None:
-        movie = self.movies_collection.find_one({"_id": ObjectId(_id)})
-        if movie:
-            return movie.get('status')
-        return None
-    
-    def isRented(self, _id) -> bool:
-        '''Regresa true si una película esta rentada o false si no lo esta'''
-        status = self.get_status(_id)
-        return status is not None  and status
-
-    def createMovie(self, imdb:str, name:str, price:float, status:bool, overview:str, image:str) -> str:
-        '''Crea una pelicula'''
-        new_movie ={
+    @staticmethod
+    def createMovie(imdb:str, name:str, price:float, status:str, overview:str, image:str) -> str:
+        '''Creates a movie'''
+        new_movie = {
             "imdb": imdb,
             "name": name,
             "price": price,
@@ -65,13 +56,12 @@ class Movies:
             "image": image
         }
         result = movies_collection.insert_one(new_movie)
-        return str(result.inserted_id) 
+        return str(result.inserted_id)
 
-    def deleteMovie(self, _id) -> None:
-        '''Elimina la película con el ID dado'''
-        self.movies_collection.delete_one({"_id": ObjectId(_id)})
-
-
+    @staticmethod
+    def deleteMovie(_id) -> None:
+        '''Deletes the movie with the given ID'''
+        movies_collection.delete_one({"_id": ObjectId(_id)})
 
 class User:
 
