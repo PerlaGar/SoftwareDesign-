@@ -2,18 +2,25 @@ from flask import Flask, render_template, session, jsonify, request
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
 from bson import ObjectId
-from movie_db import Movies # Ensure this import reflects the corrected Movies class structure
+from movie_db import Movies, Administrator, User, Client # Ensure this import reflects the corrected Movies class structure
+from pymongo import MongoClient
 
 app = Flask(__name__)
 
 # MongoDB setup
 app.config["MONGO_URI"] = "mongodb+srv://user_2:Zwut9Ul2IlLG2noo@cluster0.37fbdrx.mongodb.net/Movies"
 mongo = PyMongo(app)
-db = mongo.db
+DB = mongo.db
+
+client = MongoClient("mongodb+srv://user_2:Zwut9Ul2IlLG2noo@cluster0.37fbdrx.mongodb.net/")
+db = client["Movies"]
+
 movies_collection = db["Movies"]
 user_collection = db["Users"]
 
+
 movies_r = Movies() # Assuming Movies is correctly refactored
+admin_r = Administrator("Alex", "alex123", "password")   # temporary user for testing purposes # temporary user for testing purposes
 
 @app.route("/") 
 def hello(): 
@@ -54,7 +61,10 @@ def delete_movie(_id):
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    user = user_collection.find_one({"email": data['email'], "password": data['password']})
+    print(data['email'])
+    user = user_collection.find_one({"email": str(data['email']), "password": str(data['password'])})
+    user['_id'] =  str(user['_id'])
+    print(user)
     if user:
         session['user_id'] = str(user['_id'])
         return jsonify({'message': 'Login successful'}), 200
@@ -63,11 +73,18 @@ def login():
 
 @app.route('/users/<string:email>', methods=['GET'])
 def get_user_by_email(email):
-    user = user_collection.find_one({"email": email})
+    user = user_collection.find_one({"email": str(email)})
+    print(user)
     if user is None:
         return jsonify({'message': 'User not found'}), 404
     else:
         return jsonify(user), 200
+    
+@app.route('/users', methods=['GET'])
+def getUsers():
+    users = admin_r.getUsers()
+    return jsonify({'users': users})
+
 
 
 
