@@ -8,7 +8,7 @@ function fetchMovies() {
     .then(data => {
         const container = document.getElementById('movies-container');
         container.innerHTML = ''; // Clear previous content
-        data.forEach(movie => {
+        data.movies.forEach(movie => {
             const movieElement = document.createElement('div');
             movieElement.classList.add('movie-item');
             movieElement.innerHTML = `
