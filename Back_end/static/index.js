@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     fetchMovies();
 });
 
@@ -17,8 +17,8 @@ function fetchMovies() {
                 <p><strong>IMDB:</strong> ${movie.imdb}</p>
                 <p class="movie-overview">${movie.overview}</p>
             `;
-            container.appendChild(movieElement);
-        });
-    })
-    .catch(error => console.error('Error fetching movies:', error));
+                container.appendChild(movieElement);
+            });
+        })
+        .catch(error => console.error('Error fetching movies:', error));
 }

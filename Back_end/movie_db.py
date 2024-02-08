@@ -160,6 +160,21 @@ class Administrator(User):
         user_collection.update_one(query, {"$set":{"status":True}})
         email.status = True
 
+    def getUsers(self) -> list: #For admins
+        '''Return the list of all movies'''
+        userList = []
+        for user in user_collection.find():
+            print(user)
+            userList.append({
+                "id": str(user['_id']),
+                "name": str(user['name']),
+                "email": str(user['email']),
+                "password": str(user['password']),
+                "status": bool(user['status']),
+                "type": str(user['type']),
+            })
+        return userList
+
 # Crear una nueva película con imagen
 #new_movie = Movies("tt789012", "Nueva Película", 12.99, False, "Una película emocionante", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/1200px-IMDB_Logo_2016.svg.png")
 #new_movie_id = new_movie.createMovie(new_movie.imdb, new_movie.name, new_movie.price, new_movie.status, new_movie.overview, new_movie.image)
